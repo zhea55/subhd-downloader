@@ -1,10 +1,10 @@
 {
-  "name": "subhd-downloader",
-  "version": "1.0.0",
+  "name": "@zhea55/subhd-downloader",
+  "version": "0.0.1",
   "description": "subhd字幕下载工具",
   "main": "index.js",
   "type": "module",
-  "license": "AGPL-version-3.0",
+  "license": "gpl-3.0",
   "private": false,
   "engines": {
     "node": ">= 14.0.0",
@@ -13,29 +13,31 @@
   "homepage": "",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:zhea55/subhd-downloader.git"
   },
   "bugs": "",
-  "keywords": [],
+  "keywords": ["subhd", "下载", "downloader"],
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "Li Zhe",
+    "email": "zhea55@gmail.com",
+    "url": "https://github.com/zhea55"
   },
   "contributors": [],
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node index.js",
     "postinstall": "node ./node_modules/puppeteer/install.js",
     "rome:format": "npx rome format ."
   },
   "dependencies": {
     "commander": "^9.4.1",
-    "dom-to-image": "^2.6.0",
     "node-stream-zip": "^1.15.0",
-    "postinstall": "^0.8.0",
-    "puppeteer": "^19.4.0"
+    "puppeteer": "^19.4.1",
+    "string-similarity": "^4.0.4"
   },
   "devDependencies": {
-    "rome": "^0.10.1"
+    "rome": "^11.0.0"
+  },
+  "bin": {
+    "subhd-dl": "index.js"
   }
 }
