@@ -8,6 +8,9 @@
 
 ---
 
+
+[![asciicast](https://asciinema.org/a/OVpalSsonEw1DgDMsmzgXN0pO.svg)](https://asciinema.org/a/OVpalSsonEw1DgDMsmzgXN0pO)
+
 ## 使用方法
 ```bash
 git clone https://github.com/@zhea55/subhd-downloader.git
