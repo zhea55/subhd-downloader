@@ -13,8 +13,9 @@
 
 ## 使用方法
 ```bash
-git clone https://github.com/@zhea55/subhd-downloader.git
+git clone https://github.com/zhea55/subhd-downloader.git
 cd subhd-downloader
+npm i
 npm link
 ```
 在视频所在的目录中运行<code>subhd-dl</code>
