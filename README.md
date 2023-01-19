@@ -11,8 +11,34 @@
 
 [![asciicast](https://asciinema.org/a/OVpalSsonEw1DgDMsmzgXN0pO.svg)](https://asciinema.org/a/OVpalSsonEw1DgDMsmzgXN0pO)
 
+
+
+## 安装依赖
+
+### Windows
+```powershell
+winget install Microsoft.VisualStudio.2022.BuildTools
+
+winget install "Visual Studio Community 2022"  --override "--add Microsoft.VisualStudio.Workload.NativeDesktop  Microsoft.VisualStudio.ComponentGroup.WindowsAppSDK.Cpp"  -s msstore
+
+
+scoop install cmake make python
+```
+
+
+
 ## 使用方法
 ```bash
+git clone https://github.com/zhea55/crack-tencent-captcha.git
+cd crack-tencent-captcha
+npm i
+
+npx build-opencv --nobuild rebuild
+
+
+cd ../
+
+
 git clone https://github.com/zhea55/subhd-downloader.git
 cd subhd-downloader
 npm i
@@ -24,7 +50,3 @@ npm link
 
 ## 已知问题
 目前下载器只会抓取搜索结果第一页的数据。
-
-
-
-

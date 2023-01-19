@@ -328,7 +328,7 @@ async function main() {
   const keyword = getSearchKeyword(videoName);
 
   if (!keyword.length) {
-    throw new Error('没有解析到关键词')
+    throw new Error('没有解析到关键词');
   }
 
   const browser = await puppeteer.launch(getBrowserOptions());
