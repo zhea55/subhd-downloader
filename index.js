@@ -11,7 +11,7 @@ import { program } from 'commander';
 
 import os from 'os';
 import { getPercentageX } from '@zhea55/crack-tencent-captcha';
-import stringSimilarity from 'string-similarity';
+import { stringSimilarity } from './string-similarity.js';
 
 const currentDir = path.resolve(process.cwd());
 const BASE_URL = 'https://subhd.tv';
@@ -45,7 +45,7 @@ function getSearchKeyword(videoName) {
 }
 
 async function getDetailUrl(videoName, page) {
-  let videoInfoList = await page.$$eval(
+  const videoInfoList = await page.$$eval(
     '.view-text.text-secondary a',
     (urls) => {
       return urls.map((url) => {
@@ -60,38 +60,26 @@ async function getDetailUrl(videoName, page) {
   if (videoInfoList.length) {
     console.info(`共找到${videoInfoList.length}条字幕`);
 
-    const matches = stringSimilarity.findBestMatch(
-      videoName,
-      videoInfoList.map((o) => o.videoName)
-    );
+    const matches = [];
 
-    const downloadTimes = await page.$$eval(
-      '.pt-3.text-secondary.f12 .bi-download + span',
-      (elements) => {
-        return elements.map((el) => parseInt(el.textContent));
+    let maxScore = 0;
+    let maxScoreIndex = -1;
+    videoInfoList.forEach((o, index) => {
+      const theScore = stringSimilarity(videoName, o.videoName);
+
+      if (theScore > maxScore) {
+        maxScore = theScore;
+        maxScoreIndex = index;
       }
-    );
-
-    videoInfoList = videoInfoList.map((videoInfo, i) => {
-      return { ...videoInfo, downloadTimes: downloadTimes[i] };
+      matches.push({
+        target: o.videoName,
+        score: theScore
+      });
     });
 
-    const sameRatingList = videoInfoList.filter((videoInfo) => {
-      return videoInfo.videoName === matches.bestMatch.target;
-    });
+    console.info(`bestMatchIndex === ${maxScoreIndex}`);
 
-    let bestMatchIndex = -1;
-    let maxDownloadTimes = 0;
-    sameRatingList.forEach((videoInfo, i) => {
-      if (videoInfo.downloadTimes > maxDownloadTimes) {
-        maxDownloadTimes = videoInfo.downloadTimes;
-        bestMatchIndex = i;
-      }
-    });
-
-    console.info(`bestMatchIndex === ${bestMatchIndex}`);
-
-    return sameRatingList[bestMatchIndex].url;
+    return videoInfoList[maxScoreIndex].url;
   } else {
     throw new Error('未找到任何字幕');
   }
@@ -264,7 +252,7 @@ function downloadFile(downloadUrl, dest) {
 
 function getBrowserOptions() {
   return {
-    headless: true,
+    headless: false,
     slowMo: 100,
     // viewport: { width: 800, height: 600 },
     args: [
@@ -288,7 +276,15 @@ async function downloadSubAndExtract(downloadUrl) {
   const fileName = path.basename(url.parse(downloadUrl).pathname);
   const subFilePath = path.join(currentDir, fileName);
 
-  fs.rename(filePath, subFilePath, async (err) => {
+  const fsCallback = function (err) {
+    if (err) {
+      console.error(err);
+    }
+
+    process.exit(0);
+  };
+
+  fs.copyFile(filePath, subFilePath, async (err) => {
     if (err) {
       throw err;
     }
@@ -300,13 +296,9 @@ async function downloadSubAndExtract(downloadUrl) {
 
       console.info('字幕压缩包解压成功');
 
-      fs.unlink(subFilePath, (err) => {
-        if (err) {
-          console.error(err);
-        }
+      fs.unlink(subFilePath, fsCallback);
 
-        process.exit(0);
-      });
+      fs.unlink(filePath, fsCallback);
     }
   });
 }
